@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->version   = 2018021600;
-$plugin->requires  = 2017051500;
+$plugin->requires  = 2016120500;
 $plugin->component = 'report_customsql';
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->release   = '3.3 for Moodle 3.3+';
