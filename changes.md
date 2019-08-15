@@ -1,5 +1,9 @@
 # Change log for the Ad-hoc database queries report
 
+## Changes in 20180207.00
+
+* Initial fork.
+* Version numbering scheme change.
 
 ## Changes in 3.6
 
