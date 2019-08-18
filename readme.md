@@ -41,16 +41,11 @@ but many others who can be seen in the git log.
 
 This plugin should be compatible with Moodle 3.3+.
 
-### Install from the plugins database
-
-Install from the Moodle plugins database
-* https://moodle.org/plugins/report_customsql
-
 ### Install using git
 
 Or you can install using git. Type this commands in the root of your Moodle install
 
-    git clone https://github.com/moodleou/moodle-report_customsql.git report/customsql
+    git clone https://github.com/robo-technical-group/moodle-report_customsql.git report/customsql
     echo '/report/customsql/' >> .git/info/exclude
 
 Then run the moodle update process
