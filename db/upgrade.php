@@ -190,6 +190,6 @@ function xmldb_report_customsql_upgrade($oldversion) {
         // Customsql savepoint reached.
         upgrade_plugin_savepoint(true, 2019082000, 'report', 'customsql');
     }
-    
+
     return true;
 }

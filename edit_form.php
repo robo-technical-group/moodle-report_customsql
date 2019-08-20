@@ -142,23 +142,23 @@ class report_customsql_edit_form extends moodleform {
                 // Obviously evil stuff in the SQL.
                 $errors['querysql'] = get_string('notallowedwords', 'report_customsql',
                         implode(', ', report_customsql_bad_words_list()));
-    
+
             } else if (strpos($sql, ';') !== false) {
                 // Do not allow any semicolons.
                 $errors['querysql'] = get_string('nosemicolon', 'report_customsql');
-    
+
             } else if ($CFG->prefix != '' && preg_match('/\b' . $CFG->prefix . '\w+/i', $sql)) {
                 // Make sure prefix is prefix_, not explicit.
                 $errors['querysql'] = get_string('noexplicitprefix', 'report_customsql', $CFG->prefix);
-    
+
             } else if (!array_key_exists('runable', $data)) {
                 // This happens when the user enters a query including placehoders, and
                 // selectes Run: Scheduled, and then tries to save the form.
                 $errors['runablegroup'] = get_string('noscheduleifplaceholders', 'report_customsql');
-    
+
             }
         }   // if (! $data['unsafe'])
-        
+
         // Now try running the SQL, and ensure it runs without errors.
         $report = new stdClass;
         $report->querysql = $sql;
