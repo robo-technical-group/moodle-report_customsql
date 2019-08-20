@@ -119,6 +119,11 @@ class report_customsql_edit_form extends moodleform {
         $mform->disabledIf('emailwhat', 'runable', 'eq', 'manual');
         $mform->setType('emailto', PARAM_RAW);
 
+        // 2019.08.20.00
+        $mform->addElement('checkbox', 'unsafe',
+            get_string('unsafe', 'report_customsql'),
+            get_string('unsafe_help', 'report_customsql'));
+
         $this->add_action_buttons();
     }
 
@@ -128,76 +133,82 @@ class report_customsql_edit_form extends moodleform {
         $errors = parent::validation($data, $files);
 
         $sql = $data['querysql'];
-        if (report_customsql_contains_bad_word($sql)) {
-            // Obviously evil stuff in the SQL.
-            $errors['querysql'] = get_string('notallowedwords', 'report_customsql',
-                    implode(', ', report_customsql_bad_words_list()));
 
-        } else if (strpos($sql, ';') !== false) {
-            // Do not allow any semicolons.
-            $errors['querysql'] = get_string('nosemicolon', 'report_customsql');
+        // 2019.08.20.00
+        // Only test for unsafe SQL if unsafe flag is unset.
+        if (empty($data['unsafe']) || $data['unsafe'] == 0) {
 
-        } else if ($CFG->prefix != '' && preg_match('/\b' . $CFG->prefix . '\w+/i', $sql)) {
-            // Make sure prefix is prefix_, not explicit.
-            $errors['querysql'] = get_string('noexplicitprefix', 'report_customsql', $CFG->prefix);
-
-        } else if (!array_key_exists('runable', $data)) {
-            // This happens when the user enters a query including placehoders, and
-            // selectes Run: Scheduled, and then tries to save the form.
-            $errors['runablegroup'] = get_string('noscheduleifplaceholders', 'report_customsql');
-
-        } else {
-            // Now try running the SQL, and ensure it runs without errors.
-            $report = new stdClass;
-            $report->querysql = $sql;
-            $report->runable = $data['runable'];
-            if ($report->runable === 'daily') {
-                $report->at = $data['at'];
+            if (report_customsql_contains_bad_word($sql)) {
+                // Obviously evil stuff in the SQL.
+                $errors['querysql'] = get_string('notallowedwords', 'report_customsql',
+                        implode(', ', report_customsql_bad_words_list()));
+    
+            } else if (strpos($sql, ';') !== false) {
+                // Do not allow any semicolons.
+                $errors['querysql'] = get_string('nosemicolon', 'report_customsql');
+    
+            } else if ($CFG->prefix != '' && preg_match('/\b' . $CFG->prefix . '\w+/i', $sql)) {
+                // Make sure prefix is prefix_, not explicit.
+                $errors['querysql'] = get_string('noexplicitprefix', 'report_customsql', $CFG->prefix);
+    
+            } else if (!array_key_exists('runable', $data)) {
+                // This happens when the user enters a query including placehoders, and
+                // selectes Run: Scheduled, and then tries to save the form.
+                $errors['runablegroup'] = get_string('noscheduleifplaceholders', 'report_customsql');
+    
             }
-            $sql = report_customsql_prepare_sql($report, time());
+        }   // if (! $data['unsafe'])
+        
+        // Now try running the SQL, and ensure it runs without errors.
+        $report = new stdClass;
+        $report->querysql = $sql;
+        $report->runable = $data['runable'];
+        if ($report->runable === 'daily') {
+            $report->at = $data['at'];
+        }
+        $sql = report_customsql_prepare_sql($report, time());
 
-            // Check for required query parameters if there are any.
-            $paramvalues = [];
-            foreach (report_customsql_get_query_placeholders_and_field_names($sql) as $queryparam => $formparam) {
-                if (!isset($data[$formparam])) {
-                    $errors['params'] = get_string('queryparamschanged', 'report_customsql');
-                    break;
-                }
-                $paramvalues[$queryparam] = $data[$formparam];
+        // Check for required query parameters if there are any.
+        $paramvalues = [];
+        foreach (report_customsql_get_query_placeholders_and_field_names($sql) as $queryparam => $formparam) {
+            if (!isset($data[$formparam])) {
+                $errors['params'] = get_string('queryparamschanged', 'report_customsql');
+                break;
             }
+            $paramvalues[$queryparam] = $data[$formparam];
+        }
 
-            if (!isset($errors['params'])) {
-                try {
-                    $rs = report_customsql_execute_query($sql, $paramvalues, 2);
+        if (!isset($errors['params'])) {
+            try {
+                $rs = report_customsql_execute_query($sql, $paramvalues, 2);
 
-                    if (!empty($data['singlerow'])) {
-                        // Count rows for Moodle 2 as all Moodle 1.9 useful and more performant
-                        // recordset methods removed.
-                        $rows = 0;
-                        foreach ($rs as $value) {
-                            $rows++;
-                        }
-                        if (!$rows) {
-                            $errors['querysql'] = get_string('norowsreturned', 'report_customsql');
-                        } else if ($rows >= 2) {
-                            $errors['querysql'] = get_string('morethanonerowreturned',
-                                                             'report_customsql');
-                        }
+                if (!empty($data['singlerow'])) {
+                    // Count rows for Moodle 2 as all Moodle 1.9 useful and more performant
+                    // recordset methods removed.
+                    $rows = 0;
+                    foreach ($rs as $value) {
+                        $rows++;
                     }
-                    // Check the list of users in emailto field.
-                    if ($data['runable'] !== 'manual') {
-                        if ($invaliduser = report_customsql_validate_users($data['emailto'], $data['capability'])) {
-                            $errors['emailto'] = $invaliduser;
-                        }
+                    if (!$rows) {
+                        $errors['querysql'] = get_string('norowsreturned', 'report_customsql');
+                    } else if ($rows >= 2) {
+                        $errors['querysql'] = get_string('morethanonerowreturned',
+                                                            'report_customsql');
                     }
-                    $rs->close();
-                } catch (dml_exception $e) {
-                    $errors['querysql'] = get_string('queryfailed', 'report_customsql',
-                    $e->getMessage() . ' ' . $e->debuginfo);
-                } catch (Exception $e) {
-                    $errors['querysql'] = get_string('queryfailed', 'report_customsql',
-                                                     $e->getMessage());
                 }
+                // Check the list of users in emailto field.
+                if ($data['runable'] !== 'manual') {
+                    if ($invaliduser = report_customsql_validate_users($data['emailto'], $data['capability'])) {
+                        $errors['emailto'] = $invaliduser;
+                    }
+                }
+                $rs->close();
+            } catch (dml_exception $e) {
+                $errors['querysql'] = get_string('queryfailed', 'report_customsql',
+                $e->getMessage() . ' ' . $e->debuginfo);
+            } catch (Exception $e) {
+                $errors['querysql'] = get_string('queryfailed', 'report_customsql',
+                                                    $e->getMessage());
             }
         }
 

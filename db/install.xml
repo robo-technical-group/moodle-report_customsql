@@ -23,6 +23,8 @@
         <FIELD NAME="emailwhat" TYPE="char" LENGTH="64" NOTNULL="false" SEQUENCE="false" COMMENT="A list of email options in a select menu"/>
         <FIELD NAME="categoryid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The category ID from report_customsql_categories table."/>
         <FIELD NAME="customdir" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
+        <!-- 2019.08.20.00 -->
+        <FIELD NAME="unsafe" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Override check for unsafe SQL"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
