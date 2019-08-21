@@ -119,6 +119,11 @@ class report_customsql_edit_form extends moodleform {
         $mform->disabledIf('emailwhat', 'runable', 'eq', 'manual');
         $mform->setType('emailto', PARAM_RAW);
 
+        // 2019.08.20.00
+        $mform->addElement('checkbox', 'unsafe',
+            get_string('unsafe', 'report_customsql'),
+            get_string('unsafe_help', 'report_customsql'));
+
         $this->add_action_buttons();
     }
 
@@ -128,25 +133,28 @@ class report_customsql_edit_form extends moodleform {
         $errors = parent::validation($data, $files);
 
         $sql = $data['querysql'];
-        if (report_customsql_contains_bad_word($sql)) {
-            // Obviously evil stuff in the SQL.
-            $errors['querysql'] = get_string('notallowedwords', 'report_customsql',
-                    implode(', ', report_customsql_bad_words_list()));
 
-        } else if (strpos($sql, ';') !== false) {
-            // Do not allow any semicolons.
-            $errors['querysql'] = get_string('nosemicolon', 'report_customsql');
+        // 2019.08.20.00
+        // Only test for unsafe SQL if unsafe flag is unset.
+        if (empty($data['unsafe']) || $data['unsafe'] == 0) {
+            if (report_customsql_contains_bad_word($sql)) {
+                // Obviously evil stuff in the SQL.
+                $errors['querysql'] = get_string('notallowedwords', 'report_customsql',
+                        implode(', ', report_customsql_bad_words_list()));
+            } else if (strpos($sql, ';') !== false) {
+                // Do not allow any semicolons.
+                $errors['querysql'] = get_string('nosemicolon', 'report_customsql');
+            } else if ($CFG->prefix != '' && preg_match('/\b' . $CFG->prefix . '\w+/i', $sql)) {
+                // Make sure prefix is prefix_, not explicit.
+                $errors['querysql'] = get_string('noexplicitprefix', 'report_customsql', $CFG->prefix);
+            } else if (!array_key_exists('runable', $data)) {
+                // This happens when the user enters a query including placehoders, and
+                // selectes Run: Scheduled, and then tries to save the form.
+                $errors['runablegroup'] = get_string('noscheduleifplaceholders', 'report_customsql');
+            }
+        }   // if (! $data['unsafe'])
 
-        } else if ($CFG->prefix != '' && preg_match('/\b' . $CFG->prefix . '\w+/i', $sql)) {
-            // Make sure prefix is prefix_, not explicit.
-            $errors['querysql'] = get_string('noexplicitprefix', 'report_customsql', $CFG->prefix);
-
-        } else if (!array_key_exists('runable', $data)) {
-            // This happens when the user enters a query including placehoders, and
-            // selectes Run: Scheduled, and then tries to save the form.
-            $errors['runablegroup'] = get_string('noscheduleifplaceholders', 'report_customsql');
-
-        } else {
+        if (count($errors) == 0) {
             // Now try running the SQL, and ensure it runs without errors.
             $report = new stdClass;
             $report->querysql = $sql;
@@ -181,7 +189,7 @@ class report_customsql_edit_form extends moodleform {
                             $errors['querysql'] = get_string('norowsreturned', 'report_customsql');
                         } else if ($rows >= 2) {
                             $errors['querysql'] = get_string('morethanonerowreturned',
-                                                             'report_customsql');
+                                                                'report_customsql');
                         }
                     }
                     // Check the list of users in emailto field.
@@ -190,16 +198,20 @@ class report_customsql_edit_form extends moodleform {
                             $errors['emailto'] = $invaliduser;
                         }
                     }
-                    $rs->close();
+
+                    // 2019.08.20.00
+                    if (strtoupper(substr($sql, 0, 5)) == 'SELEC') {
+                        $rs->close();
+                    }
                 } catch (dml_exception $e) {
                     $errors['querysql'] = get_string('queryfailed', 'report_customsql',
                     $e->getMessage() . ' ' . $e->debuginfo);
                 } catch (Exception $e) {
                     $errors['querysql'] = get_string('queryfailed', 'report_customsql',
-                                                     $e->getMessage());
+                                                        $e->getMessage());
                 }
             }
-        }
+        }   // if (! $errors)
 
         // Check querylimit in range 1 .. REPORT_CUSTOMSQL_MAX_RECORDS.
         if (empty($data['querylimit']) || $data['querylimit'] > REPORT_CUSTOMSQL_MAX_RECORDS) {

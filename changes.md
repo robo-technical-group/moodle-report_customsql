@@ -1,5 +1,9 @@
 # Change log for the Ad-hoc database queries report
 
+## Changes in 20190820.00
+
+* Allow for unsafe SQL.
+
 ## Changes in 20181122.01
 
 * Initial fork.

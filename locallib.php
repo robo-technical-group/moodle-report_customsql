@@ -42,8 +42,13 @@ function report_customsql_execute_query($sql, $params = null,
         }
     }
 
-    // Note: throws Exception if there is an error.
-    return $DB->get_recordset_sql($sql, $params, 0, $limitnum);
+    // 2019.08.20.00
+    if (strtoupper(substr($sql, 0, 5)) == 'SELEC') {
+        // Note: throws Exception if there is an error.
+        return $DB->get_recordset_sql($sql, $params, 0, $limitnum);
+    } else {
+        return $DB->execute($sql, $params);
+    }   // if ($sql == 'SELECT')
 }
 
 function report_customsql_prepare_sql($report, $timenow) {
@@ -131,7 +136,11 @@ function report_customsql_generate_csv($report, $timenow) {
         }
         report_customsql_write_csv_row($handle, $data);
     }
-    $rs->close();
+
+    // 2019.08.20.00
+    if (strtoupper(substr($sql, 0, 5)) == 'SELEC') {
+        $rs->close();
+    }   // if ($sql == 'SELEC')
 
     if (!empty($handle)) {
         fclose($handle);

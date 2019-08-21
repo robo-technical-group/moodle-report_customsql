@@ -176,5 +176,20 @@ function xmldb_report_customsql_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2016011800, 'report', 'customsql');
     }
 
+    if ($oldversion < 2019082000) {
+
+        // Define field unsafe to be added to report_customsql_queries.
+        $table = new xmldb_table('report_customsql_queries');
+        $field = new xmldb_field('unsafe', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'customdir');
+
+        // Conditionally launch add field unsafe.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Customsql savepoint reached.
+        upgrade_plugin_savepoint(true, 2019082000, 'report', 'customsql');
+    }
+
     return true;
 }
