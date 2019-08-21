@@ -197,7 +197,11 @@ class report_customsql_edit_form extends moodleform {
                         $errors['emailto'] = $invaliduser;
                     }
                 }
-                $rs->close();
+
+                // 2019.08.20.00
+                if (strtoupper(substr($sql, 0, 5)) == 'SELEC') {
+                    $rs->close();
+                }
             } catch (dml_exception $e) {
                 $errors['querysql'] = get_string('queryfailed', 'report_customsql',
                 $e->getMessage() . ' ' . $e->debuginfo);
