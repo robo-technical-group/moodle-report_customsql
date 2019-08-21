@@ -154,62 +154,64 @@ class report_customsql_edit_form extends moodleform {
             }
         }   // if (! $data['unsafe'])
 
-        // Now try running the SQL, and ensure it runs without errors.
-        $report = new stdClass;
-        $report->querysql = $sql;
-        $report->runable = $data['runable'];
-        if ($report->runable === 'daily') {
-            $report->at = $data['at'];
-        }
-        $sql = report_customsql_prepare_sql($report, time());
-
-        // Check for required query parameters if there are any.
-        $paramvalues = [];
-        foreach (report_customsql_get_query_placeholders_and_field_names($sql) as $queryparam => $formparam) {
-            if (!isset($data[$formparam])) {
-                $errors['params'] = get_string('queryparamschanged', 'report_customsql');
-                break;
+        if (count($errors) == 0) {
+            // Now try running the SQL, and ensure it runs without errors.
+            $report = new stdClass;
+            $report->querysql = $sql;
+            $report->runable = $data['runable'];
+            if ($report->runable === 'daily') {
+                $report->at = $data['at'];
             }
-            $paramvalues[$queryparam] = $data[$formparam];
-        }
+            $sql = report_customsql_prepare_sql($report, time());
 
-        if (!isset($errors['params'])) {
-            try {
-                $rs = report_customsql_execute_query($sql, $paramvalues, 2);
-
-                if (!empty($data['singlerow'])) {
-                    // Count rows for Moodle 2 as all Moodle 1.9 useful and more performant
-                    // recordset methods removed.
-                    $rows = 0;
-                    foreach ($rs as $value) {
-                        $rows++;
-                    }
-                    if (!$rows) {
-                        $errors['querysql'] = get_string('norowsreturned', 'report_customsql');
-                    } else if ($rows >= 2) {
-                        $errors['querysql'] = get_string('morethanonerowreturned',
-                                                            'report_customsql');
-                    }
+            // Check for required query parameters if there are any.
+            $paramvalues = [];
+            foreach (report_customsql_get_query_placeholders_and_field_names($sql) as $queryparam => $formparam) {
+                if (!isset($data[$formparam])) {
+                    $errors['params'] = get_string('queryparamschanged', 'report_customsql');
+                    break;
                 }
-                // Check the list of users in emailto field.
-                if ($data['runable'] !== 'manual') {
-                    if ($invaliduser = report_customsql_validate_users($data['emailto'], $data['capability'])) {
-                        $errors['emailto'] = $invaliduser;
-                    }
-                }
-
-                // 2019.08.20.00
-                if (strtoupper(substr($sql, 0, 5)) == 'SELEC') {
-                    $rs->close();
-                }
-            } catch (dml_exception $e) {
-                $errors['querysql'] = get_string('queryfailed', 'report_customsql',
-                $e->getMessage() . ' ' . $e->debuginfo);
-            } catch (Exception $e) {
-                $errors['querysql'] = get_string('queryfailed', 'report_customsql',
-                                                    $e->getMessage());
+                $paramvalues[$queryparam] = $data[$formparam];
             }
-        }
+
+            if (!isset($errors['params'])) {
+                try {
+                    $rs = report_customsql_execute_query($sql, $paramvalues, 2);
+
+                    if (!empty($data['singlerow'])) {
+                        // Count rows for Moodle 2 as all Moodle 1.9 useful and more performant
+                        // recordset methods removed.
+                        $rows = 0;
+                        foreach ($rs as $value) {
+                            $rows++;
+                        }
+                        if (!$rows) {
+                            $errors['querysql'] = get_string('norowsreturned', 'report_customsql');
+                        } else if ($rows >= 2) {
+                            $errors['querysql'] = get_string('morethanonerowreturned',
+                                                                'report_customsql');
+                        }
+                    }
+                    // Check the list of users in emailto field.
+                    if ($data['runable'] !== 'manual') {
+                        if ($invaliduser = report_customsql_validate_users($data['emailto'], $data['capability'])) {
+                            $errors['emailto'] = $invaliduser;
+                        }
+                    }
+
+                    // 2019.08.20.00
+                    if (strtoupper(substr($sql, 0, 5)) == 'SELEC') {
+                        $rs->close();
+                    }
+                } catch (dml_exception $e) {
+                    $errors['querysql'] = get_string('queryfailed', 'report_customsql',
+                    $e->getMessage() . ' ' . $e->debuginfo);
+                } catch (Exception $e) {
+                    $errors['querysql'] = get_string('queryfailed', 'report_customsql',
+                                                        $e->getMessage());
+                }
+            }
+        }   // if (! $errors)
 
         // Check querylimit in range 1 .. REPORT_CUSTOMSQL_MAX_RECORDS.
         if (empty($data['querylimit']) || $data['querylimit'] > REPORT_CUSTOMSQL_MAX_RECORDS) {
