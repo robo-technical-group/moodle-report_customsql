@@ -191,5 +191,20 @@ function xmldb_report_customsql_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2019082000, 'report', 'customsql');
     }
 
+    if ($oldversion < 2019082100) {
+
+        // Define field csvlimit to be added to report_customsql_queries.
+        $table = new xmldb_table('report_customsql_queries');
+        $field = new xmldb_field('csvlimit', XMLDB_TYPE_INTEGER, '10', null, null, null, '5000', 'unsafe');
+
+        // Conditionally launch add field csvlimit.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Customsql savepoint reached.
+        upgrade_plugin_savepoint(true, 2019082100, 'report', 'customsql');
+    }
+
     return true;
 }

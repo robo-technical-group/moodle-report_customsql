@@ -1,5 +1,9 @@
 # Change log for the Ad-hoc database queries report
 
+## Changes in 20190821.00
+
+* Allow for different record limits for displayed page and CSV file.
+
 ## Changes in 20190820.00
 
 * Allow for unsafe SQL.

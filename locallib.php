@@ -106,7 +106,14 @@ function report_customsql_generate_csv($report, $timenow) {
     $sql = report_customsql_prepare_sql($report, $timenow);
 
     $queryparams = !empty($report->queryparams) ? unserialize($report->queryparams) : array();
-    $querylimit  = !empty($report->querylimit) ? $report->querylimit : REPORT_CUSTOMSQL_MAX_RECORDS;
+
+    // 2019.08.21.00
+    // $querylimit  = !empty($report->querylimit) ? $report->querylimit : REPORT_CUSTOMSQL_MAX_RECORDS;
+    // csvlimit should never be negative, but if it is, treat as no limit.
+    $querylimit  = empty($report->csvlimit) || $report->csvlimit < 0
+        ? 0
+        : $report->csvlimit;
+
     $rs = report_customsql_execute_query($sql, $queryparams, $querylimit);
 
     $csvfilenames = array();

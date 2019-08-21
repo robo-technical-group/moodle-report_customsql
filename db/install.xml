@@ -25,6 +25,8 @@
         <FIELD NAME="customdir" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
         <!-- 2019.08.20.00 -->
         <FIELD NAME="unsafe" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Override check for unsafe SQL"/>
+        <!-- 2019.08.21.00 -->
+        <FIELD NAME="csvlimit" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="5000" SEQUENCE="false" COMMENT="Limit the number of results returned for CSV exports"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
