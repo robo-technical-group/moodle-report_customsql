@@ -155,6 +155,8 @@ if (!empty($paramvalues)) {
 }
 
 $count = 0;
+$maxreached = false; // 2019.08.21.00
+
 if (is_null($csvtimestamp)) {
     echo html_writer::tag('p', get_string('nodatareturned', 'report_customsql'));
 } else {
@@ -175,16 +177,32 @@ if (is_null($csvtimestamp)) {
 
         while ($row = fgetcsv($handle)) {
             $table->data[] = report_customsql_display_row($row, $linkcolumns);
-            $count += 1;
+
+            // 2019.08.21.00
+            // $count += 1;
+            $count++;
+            if ($count >= $report->querylimit
+                    || $count >= REPORT_CUSTOMSQL_MAX_RECORDS) {
+                $maxreached = true;
+                break;
+            }
         }
 
         fclose($handle);
         echo html_writer::table($table);
 
+        // 2019.08.21.00
+        /*
         if ($count >= REPORT_CUSTOMSQL_MAX_RECORDS) {
             echo html_writer::tag('p', get_string('recordlimitreached', 'report_customsql',
                                                   REPORT_CUSTOMSQL_MAX_RECORDS),
                                                   array('class' => 'admin_note'));
+        */
+        if ($maxreached) {
+            echo html_writer::tag('p',
+                get_string('recordlimitreached', 'report_customsql',
+                    $report->querylimit),
+                    array('class' => 'admin_note'));
         } else {
             echo html_writer::tag('p', get_string('recordcount', 'report_customsql', $count),
                     array('class' => 'admin_note'));

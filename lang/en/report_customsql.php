@@ -134,7 +134,7 @@ $string['queryrundate'] = 'query run date';
 $string['querysql'] = 'Query SQL';
 $string['querysqlrequried'] = 'You must enter some SQL.';
 $string['recordcount'] = 'This report has {$a} rows.';
-$string['recordlimitreached'] = 'This query reached the limit of {$a} rows. Some rows may have been omitted from the end.';
+// $string['recordlimitreached'] = 'This query reached the limit of {$a} rows. Some rows may have been omitted from the end.';
 $string['reportfor'] = 'Query run on {$a}';
 $string['requireint'] = 'Integer required';
 $string['runable'] = 'Run';
@@ -158,3 +158,9 @@ $string['privacy:metadata'] = 'The Ad-hoc database queries plugin does not store
 // 2019.08.20.00
 $string['unsafe'] = 'Allow unsafe SQL';
 $string['unsafe_help'] = 'Skip checks for unsafe SQL in query';
+
+// 2019.08.21.00
+$string['csvlimit'] = 'Limit rows returned in CSV file';
+$string['csvlimitrange'] = 'Number must be non-negative';
+$string['recordlimitreached'] = 'This query reached the display limit of {$a} rows. Some rows may have been omitted from the end. Download the CSV file to see full results.';
+$string['querylimit'] = 'Limit rows displayed';

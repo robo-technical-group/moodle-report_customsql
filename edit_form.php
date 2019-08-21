@@ -92,6 +92,13 @@ class report_customsql_edit_form extends moodleform {
         $mform->addRule('querylimit', get_string('requireint', 'report_customsql'),
                         'numeric', null, 'client');
 
+        // 2019.08.21.00
+        $mform->addElement('text', 'csvlimit', get_string('csvlimit', 'report_customsql'));
+        $mform->setType('csvlimit', PARAM_INT);
+        $mform->setDefault('csvlimit', REPORT_CUSTOMSQL_MAX_RECORDS);
+        $mform->addRule('csvlimit', get_string('requireint', 'report_customsql'),
+                        'numeric', null, 'client');
+
         $runat = array();
         if ($hasparameters) {
             $runat[] = $mform->createElement('select', 'runable', null,  report_customsql_runable_options('manual'));
