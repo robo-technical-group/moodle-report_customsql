@@ -157,7 +157,7 @@ function report_customsql_generate_csv($report, $timenow) {
             }
         }
         if ($report->singlerow) {
-            array_unshift($data, strftime('%Y-%m-%d', $timenow));
+            array_unshift($data, strftime('%Y-%m-%d %H:%i', $timenow));
         }
         report_customsql_write_csv_row($handle, $data);
     }

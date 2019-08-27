@@ -1,5 +1,9 @@
 # Change log for the Ad-hoc database queries report
 
+## Changes in 20190827.01
+
+* Add time for single-row queries.
+
 ## Changes in 20190827.00
 
 * Allow reports to run hourly and continuously.
