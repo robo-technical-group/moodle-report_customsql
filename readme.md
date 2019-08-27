@@ -7,7 +7,7 @@ which helps when you have a lot of them.
 
 Other users with the right capability can go to Administration -> Reports ->
 Ad-hoc database queries and see a list of queries to which they have access.
-Results can be viewed on-screen or downloaded as CSV.
+Results can be viewed on-screen, downloaded as CSV, and/or sent via e-mail.
 
 Reports can contain placeholders, in which case, the user running the report is
 presented with a form where they can enter the values to substitute for the
@@ -26,15 +26,15 @@ will be displayed as a single column containing links with link text from
 `name` and the target URL from `name_link_url`.
 
 You can set a limit on the maximum number of rows returned by a query
-(up to the hard limit of 5000).
+(up to the hard limit of 5,000 rows).
 
 See http://docs.moodle.org/en/Custom_SQL_queries_report for more information.
 
 
 ## Acknowledgements
 
-Creted by the Open University (http://www.open.ac.uk/). There have been contributions
-but many others who can be seen in the git log.
+Created by the Open University (http://www.open.ac.uk/) with modifications by Robo Technical Group, LLC. There have been contributions
+by many others who can be seen in the git log.
 
 
 ## Installation and set-up

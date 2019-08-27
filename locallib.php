@@ -42,18 +42,36 @@ function report_customsql_execute_query($sql, $params = null,
         }
     }
 
-    // 2019.08.20.00
-    if (strtoupper(substr($sql, 0, 5)) == 'SELEC') {
-        // Note: throws Exception if there is an error.
-        return $DB->get_recordset_sql($sql, $params, 0, $limitnum);
+    // 2019.08.26.00
+    // Test for multiple queries in unsafe SQL.
+    if (strpos($sql, ';') === false) {
+        // 2019.08.20.00
+        if (strtoupper(substr($sql, 0, 5)) == 'SELEC') {
+            // Note: throws Exception if there is an error.
+            return $DB->get_recordset_sql($sql, $params, 0, $limitnum);
+        } else {
+            return $DB->execute($sql, $params);
+        }   // if ($sql == 'SELEC')
     } else {
-        return $DB->execute($sql, $params);
-    }   // if ($sql == 'SELECT')
+        $sqlsplits = explode(';', $sql);
+        for ($index = 0; $index < count($sqlsplits) - 1; $index++) {
+            $DB->execute($sqlsplits[$index], $params);
+        }   // for ($index)
+        return $DB->get_recordset_sql($sqlsplits[count($sqlsplits) - 1], $params, 0, $limitnum);
+    }   // if (strpos($sql, ';'))
 }
 
 function report_customsql_prepare_sql($report, $timenow) {
     global $USER;
-    $sql = $report->querysql;
+
+    // 2019.08.26.00
+    $sql = trim($report->querysql);
+
+    // Strip ending semicolon if one exists.
+    if (substr($sql, -1) == ';') {
+        $sql = substr($sql, 0, strlen($sql) - 1);
+    }   // if (substr($sql, -1) == ';')
+
     if ($report->runable != 'manual') {
         list($end, $start) = report_customsql_get_starts($report, $timenow);
         $sql = report_customsql_substitute_time_tokens($sql, $start, $end);

@@ -1,5 +1,10 @@
 # Change log for the Ad-hoc database queries report
 
+## Changes in 20190826.00
+
+* Allow for multiple SQL statements. In a multi-statement query, the recordset of the final statement is returned as the report.
+* Test for parameters with capital letters (not allowed).
+
 ## Changes in 20190821.00
 
 * Allow for different record limits for displayed page and CSV file.
