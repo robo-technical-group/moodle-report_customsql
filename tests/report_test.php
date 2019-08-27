@@ -92,7 +92,10 @@ class report_customsql_test extends advanced_testcase {
         $options = array('manual'  => get_string('manual', 'report_customsql'),
                          'daily'   => get_string('automaticallydaily', 'report_customsql'),
                          'weekly'  => get_string('automaticallyweekly', 'report_customsql'),
-                         'monthly' => get_string('automaticallymonthly', 'report_customsql'));
+                         'monthly' => get_string('automaticallymonthly', 'report_customsql'),
+                         'always'   => get_string('automaticallyalways', 'report_customsql'),
+                         'hourly'   => get_string('automaticallyhourly', 'report_customsql')
+                        );
 
         $this->assertEquals($options, report_customsql_runable_options());
     }
