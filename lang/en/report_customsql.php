@@ -164,3 +164,6 @@ $string['csvlimit'] = 'Limit rows returned in CSV file';
 $string['csvlimitrange'] = 'Number must be non-negative';
 $string['recordlimitreached'] = 'This query reached the display limit of {$a} rows. Some rows may have been omitted from the end. Download the CSV file to see full results.';
 $string['querylimit'] = 'Limit rows displayed';
+
+// 2019.08.26.00
+$string['paramscapitalized'] = 'Parameter names cannot contain capital letters. (Counted {$a->possible} possible parameters but only parsed {$a->query}.)';

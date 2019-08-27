@@ -173,7 +173,9 @@ class report_customsql_edit_form extends moodleform {
 
             // Check for required query parameters if there are any.
             $paramvalues = [];
-            foreach (report_customsql_get_query_placeholders_and_field_names($sql) as $queryparam => $formparam) {
+            // 2019.08.26.00
+            $parsedparams = report_customsql_get_query_placeholders_and_field_names($sql);
+            foreach ($parsedparams as $queryparam => $formparam) {
                 if (!isset($data[$formparam])) {
                     $errors['params'] = get_string('queryparamschanged', 'report_customsql');
                     break;
@@ -181,7 +183,17 @@ class report_customsql_edit_form extends moodleform {
                 $paramvalues[$queryparam] = $data[$formparam];
             }
 
-            if (!isset($errors['params'])) {
+            // 2019.08.26.00
+            $possibleparams = [];
+            preg_match_all('/(?<!:):[a-zA-Z][a-zA-Z0-9_]*/', $sql, $possibleparams);
+            if (count($parsedparams) != count($possibleparams[0])) {
+                $val = new stdClass;
+                $val->query = count($parsedparams);
+                $val->possible = count($possibleparams[0]);
+                $errors['querysql'] = get_string('paramscapitalized', 'report_customsql', $val);
+            }   // if (count($queryparam) != count($possibleParams))
+
+            if (!isset($errors['params']) && ! isset($errors['querysql'])) {
                 try {
                     $rs = report_customsql_execute_query($sql, $paramvalues, 2);
 
