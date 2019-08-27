@@ -1,5 +1,10 @@
 # Change log for the Ad-hoc database queries report
 
+## Changes in 20190827.00
+
+* Allow reports to run hourly and continuously.
+* Alter scheduled task to run every ten minutes by default to support hourly and continuous reports.
+
 ## Changes in 20190826.00
 
 * Allow for multiple SQL statements. In a multi-statement query, the recordset of the final statement is returned as the report.

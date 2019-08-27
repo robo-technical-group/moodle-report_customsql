@@ -36,7 +36,7 @@ $string['availablereports'] = 'On-demand queries';
 $string['availableto'] = 'Available to {$a}.';
 $string['backtoreportlist'] = 'Back to the list of queries';
 $string['category'] = 'Category';
-$string['categorycontent'] = '({$a->manual} on-demand, {$a->daily} daily, {$a->weekly} weekly, {$a->monthly} monthly)';
+// $string['categorycontent'] = '({$a->manual} on-demand, {$a->daily} daily, {$a->weekly} weekly, {$a->monthly} monthly)';
 $string['categoryexists'] = 'Category names must be unique, this name already exists';
 $string['categorynamex'] = 'Category name: {$a}';
 $string['changetheparameters'] = 'Change the parameters';
@@ -50,7 +50,7 @@ $string['customsql:definequeries'] = 'Define custom queries';
 $string['customsql:managecategories'] = 'Define custom categories';
 $string['customsql:view'] = 'View custom queries report';
 $string['dailyheader'] = 'Daily';
-$string['dailyheader_help'] = 'These queries are automatically run every day at the specified time. These links let you view the results that has already been accumulated.';
+$string['dailyheader_help'] = 'These queries are automatically run every day at the specified time. These links let you view the results that have already been accumulated.';
 $string['defaultcategory'] = 'Miscellaneous';
 $string['delete'] = 'Delete';
 $string['deleteareyousure'] = 'Are you sure you want to delete this query?';
@@ -92,8 +92,8 @@ $string['manual'] = 'On-demand';
 $string['manualheader'] = 'On-demand';
 $string['manualheader_help'] = 'These queries are run on-demand, when you click the link to view the results.';
 $string['monthlyheader'] = 'Monthly';
-$string['monthlyheader_help'] = 'These queries are automatically run on the first day of each month, to report on the previous month. These links let you view the results that has already been accumulated.';
-$string['monthlynote_help'] = 'These queries are automatically run on the first day of each month, to report on the previous month. These links let you view the results that has already been accumulated.';
+$string['monthlyheader_help'] = 'These queries are automatically run on the first day of each month, to report on the previous month. These links let you view the results that have already been accumulated.';
+$string['monthlynote_help'] = 'These queries are automatically run on the first day of each month, to report on the previous month. These links let you view the results that have already been accumulated.';
 $string['morethanonerowreturned'] = 'More than one row was returned. This query should return one row.';
 $string['nodatareturned'] = 'This query did not return any data.';
 $string['noexplicitprefix'] = 'Please do to include the table name prefix <code>{$a}</code> in the SQL. Instead, put the un-prefixed table name inside <code>{}</code> characters.';
@@ -151,7 +151,7 @@ $string['userswhocanviewsitereports'] = 'Users who can see system reports (moodl
 $string['userswhocanconfig'] = 'Only administrators (moodle/site:config)';
 $string['verifyqueryandupdate'] = 'Verify the Query SQL text and update the form';
 $string['weeklyheader'] = 'Weekly';
-$string['weeklyheader_help'] = 'These queries are automatically run on the first day of each week, to report on the previous week. These links let you view the results that has already been accumulated.';
+$string['weeklyheader_help'] = 'These queries are automatically run on the first day of each week, to report on the previous week. These links let you view the results that have already been accumulated.';
 $string['whocanaccess'] = 'Who can access this query';
 $string['privacy:metadata'] = 'The Ad-hoc database queries plugin does not store any personal data.';
 
@@ -167,3 +167,12 @@ $string['querylimit'] = 'Limit rows displayed';
 
 // 2019.08.26.00
 $string['paramscapitalized'] = 'Parameter names cannot contain capital letters. (Counted {$a->possible} possible parameters but only parsed {$a->query}.)';
+
+// 2019.08.27.00
+$string['automaticallyhourly'] = 'Scheduled, every hour';
+$string['hourlyheader'] = 'Hourly';
+$string['hourlyheader_help'] = 'These queries are automatically run once an hour. These links let you view the results that have already been accumulated.';
+$string['automaticallyalways'] = 'Scheduled, continuously';
+$string['alwaysheader'] = 'Continuously';
+$string['alwaysheader_help'] = 'These queries are automatically run every time cron runs (every few minutes). These links let you view the results that have already been accumulated.';
+$string['categorycontent'] = '({$a->manual} on-demand, {$a->always} continuous, {$a->hourly} hourly, {$a->daily} daily, {$a->weekly} weekly, {$a->monthly} monthly)';

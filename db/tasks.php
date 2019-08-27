@@ -29,7 +29,8 @@ $tasks = array(
     array(
         'classname' => 'report_customsql\task\run_reports',
         'blocking' => 0,
-        'minute' => '10',
+        // 2019.08.27.00 Allow for hourly and continuous reports
+        'minute' => '*/10',
         'hour' => '*',
         'day' => '*',
         'month' => '*',

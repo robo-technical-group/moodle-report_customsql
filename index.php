@@ -76,6 +76,9 @@ foreach ($categories as $category) {
     $dailyreports = report_customsql_get_reports_for($category->id, 'daily');
     $weeklyreports = report_customsql_get_reports_for($category->id, 'weekly');
     $monthlyreports = report_customsql_get_reports_for($category->id, 'monthly');
+    // 2019.08.27.00
+    $alwaysreports = report_customsql_get_reports_for($category->id, 'always');
+    $hourlyreports = report_customsql_get_reports_for($category->id, 'hourly');
 
     // Category content.
     $cc = new stdClass();
@@ -83,17 +86,27 @@ foreach ($categories as $category) {
     $cc->daily = count($dailyreports);
     $cc->weekly = count($weeklyreports);
     $cc->monthly = count($monthlyreports);
+    // 2019.08.27.00
+    $cc->always = count($alwaysreports);
+    $cc->hourly = count($hourlyreports);
+
     $reportcounts = get_string('categorycontent', 'report_customsql', $cc);
 
     $reportcounts = html_writer::tag('span', $reportcounts, array('class' => 'reportcounts'));
     echo $OUTPUT->heading($link . ' ' . $reportcounts);
 
     echo html_writer::start_tag('div', array('class' => 'csql_category_reports'));
-    if (empty($manualreports) && empty($dailyreports) && empty($weeklyreports) && empty($monthlyreports)) {
+    if (empty($manualreports) && empty($dailyreports) &&
+            empty($weeklyreports) && empty($monthlyreports) &&
+            // 2019.08.27.00
+            empty($alwaysreports) && empty($hourlyreports)) {
         echo $OUTPUT->heading(get_string('availablereports', 'report_customsql'), 3).
         html_writer::tag('p', get_string('noreportsavailable', 'report_customsql'));
     } else {
         report_customsql_print_reports_for($manualreports, 'manual');
+        // 2019.08.27.00
+        report_customsql_print_reports_for($alwaysreports, 'always');
+        report_customsql_print_reports_for($hourlyreports, 'hourly');
         report_customsql_print_reports_for($dailyreports, 'daily');
         report_customsql_print_reports_for($weeklyreports, 'weekly');
         report_customsql_print_reports_for($monthlyreports, 'monthly');
