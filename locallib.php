@@ -31,7 +31,7 @@ define('REPORT_CUSTOMSQL_MAX_RECORDS', 5000);
 define('REPORT_CUSTOMSQL_START_OF_WEEK', 6); // Saturday.
 
 function report_customsql_execute_query($sql, $params = null,
-        $limitnum = REPORT_CUSTOMSQL_MAX_RECORDS) {
+        $limitnum = REPORT_CUSTOMSQL_MAX_RECORDS, $unsafe = false) {
     global $CFG, $DB;
 
     $sql = preg_replace('/\bprefix_(?=\w+)/i', $CFG->prefix, $sql);
@@ -45,8 +45,8 @@ function report_customsql_execute_query($sql, $params = null,
     // 2019.08.26.00
     // Test for multiple queries in unsafe SQL.
     if (strpos($sql, ';') === false) {
-        // 2019.08.20.00
-        if (strtoupper(substr($sql, 0, 5)) == 'SELEC') {
+        // 2019.08.20.00, 2019.09.09.00
+        if (strtoupper(substr($sql, 0, 5)) == 'SELEC' || ! $unsafe) {
             // Note: throws Exception if there is an error.
             return $DB->get_recordset_sql($sql, $params, 0, $limitnum);
         } else {
@@ -132,7 +132,8 @@ function report_customsql_generate_csv($report, $timenow) {
         ? 0
         : $report->csvlimit;
 
-    $rs = report_customsql_execute_query($sql, $queryparams, $querylimit);
+    // 2019.09.09.00
+    $rs = report_customsql_execute_query($sql, $queryparams, $querylimit, $report->unsafe);
 
     $csvfilenames = array();
     $csvtimestamp = null;
@@ -157,7 +158,8 @@ function report_customsql_generate_csv($report, $timenow) {
             }
         }
         if ($report->singlerow) {
-            array_unshift($data, strftime('%Y-%m-%d %H:%i', $timenow));
+            // 2019.08.27.01, 2019.09.09.00
+            array_unshift($data, strftime('%F %T', $timenow));
         }
         report_customsql_write_csv_row($handle, $data);
     }

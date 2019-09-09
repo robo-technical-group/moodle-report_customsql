@@ -1,5 +1,10 @@
 # Change log for the Ad-hoc database queries report
 
+## Changes in 20190909.00
+
+* Fix a bug where queries beginning with a comment do not run properly. (First pass.)
+* Correct datetime format for single-row reports.
+
 ## Changes in 20190827.01
 
 * Add time for single-row queries.
