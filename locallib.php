@@ -159,7 +159,7 @@ function report_customsql_generate_csv($report, $timenow) {
         }
         if ($report->singlerow) {
             // 2019.08.27.01, 2019.09.09.00
-            array_unshift($data, strftime('%Y-%m-%d %H:%M', $timenow));
+            array_unshift($data, strftime('%F %T', $timenow));
         }
         report_customsql_write_csv_row($handle, $data);
     }
