@@ -149,7 +149,6 @@ $string['schedulednote'] = 'These queries are automatically run on the first day
 $string['scheduledqueries'] = 'Scheduled queries';
 $string['startofweek'] = 'Day to run weekly reports';
 $string['startofweek_default'] = 'Use site calendar start of week ({$a})';
-$string['startofweek_desc'] = 'This is the day which should be considered the first day of the week, for weekly scheduled reports.';
 $string['typeofresult'] = 'Type of result';
 $string['unknowndownloadfile'] = 'Unknown download file.';
 $string['usernotfound'] = 'User with the username \'{$a}\' does not exist';

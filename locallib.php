@@ -28,6 +28,7 @@ global $CFG;
 require_once($CFG->libdir . '/validateurlsyntax.php');
 
 define('REPORT_CUSTOMSQL_LIMIT_EXCEEDED_MARKER', '-- ROW LIMIT EXCEEDED --');
+define('REPORT_CUSTOMSQL_MAX_RECORDS', 5000);
 
 function report_customsql_execute_query($sql, $params = null,
         $limitnum = null, $unsafe = false) {
