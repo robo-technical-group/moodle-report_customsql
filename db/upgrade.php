@@ -206,7 +206,7 @@ function xmldb_report_customsql_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2019082100, 'report', 'customsql');
     }
 
-    if ($oldversion < 2019111101) {
+    if ($oldversion < 2020083000) {
         // For upgraded sites, set this setting to be backwards compatible.
         set_config('startwday', '6', 'report_customsql');
         upgrade_plugin_savepoint(true, 2019111101, 'report', 'customsql');
