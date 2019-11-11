@@ -46,8 +46,6 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext_with_maxlength('report_customsql/querylimitmaximum',
             get_string('querylimitmaximum', 'report_customsql'),
             get_string('querylimitmaximum_desc', 'report_customsql'), 5000, PARAM_INT, null, 10));
-    $settings->add(new admin_setting_configselect('report_customsql/startwday', get_string('startofweek', 'report_customsql'),
-        null, -1, $options));
 }
 
 $ADMIN->add('reports', new admin_externalpage('report_customsql',
