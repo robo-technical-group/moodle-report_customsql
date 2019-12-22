@@ -179,11 +179,11 @@ if (is_null($csvtimestamp)) {
         while ($row = fgetcsv($handle)) {
             $table->data[] = report_customsql_display_row($row, $linkcolumns);
 
-            // 2019.08.21.00
+            // 2019.08.21.00, 2019.12.21.00
             // $count += 1;
             $count++;
-            if ($count >= $report->querylimit
-                    || $count >= REPORT_CUSTOMSQL_MAX_RECORDS) {
+            $maxlimit = get_config('report_customsql', 'querylimitdefault');
+            if ($count >= $report->querylimit || $count >= $maxlimit) {
                 $maxreached = true;
                 break;
             }

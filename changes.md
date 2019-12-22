@@ -1,5 +1,9 @@
 # Change log for the Ad-hoc database queries report
 
+## Changes in 20191221.00
+
+* Bug fix for absolute maximum rows for a report.
+
 ## Changes in 3.8
 
 * Report results can now be downloaded in any of data format that Moodle supports, not just CSV.
