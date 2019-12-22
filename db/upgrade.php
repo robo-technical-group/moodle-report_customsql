@@ -81,7 +81,7 @@ function xmldb_report_customsql_upgrade($oldversion) {
         require_once($CFG->dirroot . '/report/customsql/locallib.php');
         $table = new xmldb_table('report_customsql_queries');
         $field = new xmldb_field('querylimit', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED,
-                XMLDB_NOTNULL, null, REPORT_CUSTOMSQL_MAX_RECORDS, 'queryparams');
+                XMLDB_NOTNULL, null, 5000, 'queryparams');
 
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
@@ -139,7 +139,7 @@ function xmldb_report_customsql_upgrade($oldversion) {
         require_once($CFG->dirroot . '/report/customsql/locallib.php');
         $table = new xmldb_table('report_customsql_queries');
         $field = new xmldb_field('querylimit', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED,
-                XMLDB_NOTNULL, null, REPORT_CUSTOMSQL_MAX_RECORDS, 'queryparams');
+                XMLDB_NOTNULL, null, 5000, 'queryparams');
 
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
@@ -204,6 +204,12 @@ function xmldb_report_customsql_upgrade($oldversion) {
 
         // Customsql savepoint reached.
         upgrade_plugin_savepoint(true, 2019082100, 'report', 'customsql');
+    }
+
+    if ($oldversion < 2019111101) {
+        // For upgraded sites, set this setting to be backwards compatible.
+        set_config('startwday', '6', 'report_customsql');
+        upgrade_plugin_savepoint(true, 2019111101, 'report', 'customsql');
     }
 
     return true;
