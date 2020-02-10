@@ -1,5 +1,10 @@
 # Change log for the Ad-hoc database queries report
 
+## Changes in 3.9
+
+* Scheduled reports which accumulate one row at a time now display
+  with the most recent data at the top.
+
 ## Changes in 20191221.00
 
 * Bug fix for absolute maximum rows for a report.
@@ -12,7 +17,6 @@
   This defaults to the Moodle setting for this for new installs. For existing installs,
   it stays the same as before (Saturday) but you can change it.
   
-## Changes in 3.7
 ## Changes in 3.8
 
 * Report results can now be downloaded in any of data format that Moodle supports, not just CSV.
