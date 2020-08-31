@@ -1,12 +1,11 @@
 # Change log for the Ad-hoc database queries report
 
-## Changes in 3.9
+## Changes in 3.9 (20200628.00)
 
 * Scheduled reports which accumulate one row at a time now display
   with the most recent data at the top.
 * When sending emails for scheduled reports, the number of rows in
   the results is now added to the subject line.
-
 
 ## Changes in 20191221.00
 
